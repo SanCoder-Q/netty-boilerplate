@@ -1,0 +1,19 @@
+#!/bin/sh
+#
+basedir=$(readlink -e $(dirname $0)/..)
+program_name=$(readlink -e $0)
+
+echo "$(date +%FT%T): starting ${program_name}" 1>&2
+
+echo "JAVA_HOME is $JAVA_HOME"
+
+echo "Unit tests" 1>&2
+"${basedir}/sbt" -mem 2048 -Dsbt.log.noformat=true clean test -batch -java-home $JAVA_HOME
+rc=$?
+if [ $rc -ne 0 ]; then
+    echo "$(date +%FT%T): ERROR: sbt returned error: $rc" 1>&2
+    exit 1
+fi
+
+echo "$(date +%FT%T): finishing ${program_name}" 1>&2
+exit 0
